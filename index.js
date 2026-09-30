@@ -67,6 +67,24 @@ const server = http.createServer( async (req, res) => {
     return;
   }
 
+  if (req.method === 'GET' && urlPath.startsWith('/tasks/')) {
+    const pathSeparatedInArray = urlPath.split('/')[2];
+    const id = Number(pathSeparatedInArray)
+    const getId = tasksList.find((task) => task.id === id )
+    
+    if (getId) {
+      res.statusCode = 200
+      res.setHeader('Content-Type', 'application/json');
+      return res.end(JSON.stringify({lista: getId}));
+    }else {
+      res.statusCode = 400;
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify({ erro: 'Id não encontrado' }));
+      return;
+    }
+
+  }
+
   if(getMethodAndPath('GET', '/tasks')) {
 
     const getFilterList = tasksList.filter(tasks => tasks.status === getQueryParams);
